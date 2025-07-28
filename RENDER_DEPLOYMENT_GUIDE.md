@@ -34,6 +34,38 @@
 
 ### 3. If Deployment Fails (TensorFlow/NumPy issues):
 
+#### URGENT FIX for "Cannot import 'setuptools.build_meta'" error:
+
+**Option A: Use the updated requirements.txt (recommended)**
+The requirements.txt has been updated with explicit setuptools and wheel versions.
+Also changed runtime.txt to python-3.10.13 for better compatibility.
+
+**Option B: If still failing, try Python 3.13 compatible versions:**
+1. In Render dashboard, go to your service settings
+2. Replace requirements.txt content with requirements-py313.txt content:
+```
+setuptools>=68.0.0
+wheel>=0.38.0
+Flask==3.0.0
+numpy>=1.26.0
+tensorflow>=2.15.0
+Werkzeug>=3.0.0
+gunicorn>=21.2.0
+```
+
+**Option C: Minimal deployment (if TensorFlow keeps failing)**
+Replace requirements.txt content with:
+```
+setuptools>=68.0.0
+wheel>=0.38.0
+Flask
+numpy
+tensorflow-cpu
+gunicorn
+```
+
+#### Alternative approaches:
+
 #### Option A: Use requirements_backup.txt
 
 1. Rename requirements.txt to requirements_old.txt
