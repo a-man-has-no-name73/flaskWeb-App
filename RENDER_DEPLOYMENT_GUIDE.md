@@ -1,24 +1,22 @@
 # Render Deployment Guide for Sleep Stage Prediction App
 
+## ⚠️ CRITICAL: Render Python Version Issue
+
+**Render doesn't always follow `runtime.txt`** and may use Python 3.13 by default.
+The requirements.txt has been updated for Python 3.13 compatibility.
+
 ## Files Created for Render:
 
-1. requirements.txt - Python dependencies
-2. runtime.txt - Python version specification
+1. requirements.txt - Python 3.13 compatible dependencies
+2. runtime.txt - Python version (may be ignored by Render)
 3. Procfile - How to start the app
 4. Modified app.py - Updated for production
 
 ## Render Deployment Steps:
 
-### 1. Create GitHub Repository
+### 1. Create GitHub Repository ✅ (Already Done)
 
-- Create a new repository on GitHub
-- Upload all your files:
-  - app.py
-  - fold1_model.keras
-  - templates/ folder
-  - requirements.txt
-  - runtime.txt
-  - Procfile
+Your repository is ready at: https://github.com/a-man-has-no-name73/flaskWeb-App.git
 
 ### 2. Deploy on Render
 
