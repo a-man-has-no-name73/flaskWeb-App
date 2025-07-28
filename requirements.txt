@@ -2,6 +2,7 @@ setuptools>=68.0.0
 wheel>=0.38.0
 Flask==3.0.0
 numpy>=2.0.0
+protobuf==5.28.3
 tf-nightly-cpu
 Werkzeug>=3.0.0
 gunicorn>=21.2.0

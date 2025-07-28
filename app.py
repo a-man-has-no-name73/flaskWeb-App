@@ -1,4 +1,12 @@
+import os
+import warnings
 import numpy as np
+
+# Suppress TensorFlow and protobuf warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+warnings.filterwarnings('ignore', category=UserWarning, module='google.protobuf')
+
 import tensorflow as tf
 from flask import Flask, request, render_template
 from tensorflow.keras.models import Model
