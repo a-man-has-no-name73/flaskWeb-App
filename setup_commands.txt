@@ -1,0 +1,9 @@
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip setuptools wheel
+pip install flask
+pip install numpy
+pip install tensorflow==2.18.0
+pip install werkzeug
+python app.py

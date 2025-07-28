@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Sleep Stage Prediction</title>
+</head>
+<body style="font-family: sans-serif; text-align: center; margin-top: 40px;">
+
+    <!-- ─── Logo + Project / Course Header ─────────────────────── -->
+    <div style="text-align: left; display: inline-block; margin-bottom: 40px;">
+        <!-- Circular logo -->
+        <img src="dp.jpeg"
+             alt="Logo"
+             style="
+               width: 100px;
+               height: 100px;
+               border-radius: 50%;
+               object-fit: cover;
+               display: block;
+               margin-bottom: 20px;
+             ">
+        
+        <p><strong>COURSE NO:</strong> BME 310</p>
+        <p><strong>COURSE TITLE:</strong> Communicating Protocols for Biomedical Instruments Sessional</p>
+        <p><strong>GROUP NO:</strong> 11</p>
+        <p><strong>DOMAIN:</strong> Sleep staging using EEG</p>
+        <p><strong>PROJECT NAME:</strong><br>
+           Machine learning with ensemble stacking model for automated sleep staging  
+           using dual-channel EEG signal
+        </p>
+        <p><strong>STUDENT ID:</strong><br>
+           2118028 – UPAMA RANI ROY<br>
+           2118039 – SHAIRA ZAMAN HITAISHI<br>
+           2118045 – MAHEDI HASAN SAZID
+        </p>
+    </div>
+
+    <!-- ─── Prediction Form ───────────────────────────────────── -->
+    <h2>Upload .npz EEG File (Context Window)</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".npz" required>
+        <br><br>
+        <input type="submit" value="Predict Sleep Stage">
+    </form>
+
+    <!-- ─── Display Result ────────────────────────────────────── -->
+    {% if prediction %}
+      <h3>Prediction: {{ prediction }}</h3>
+    {% endif %}
+
+</body>
+</html>
