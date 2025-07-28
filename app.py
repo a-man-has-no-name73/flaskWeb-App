@@ -1,13 +1,18 @@
 import os
+import gc
 import warnings
 import numpy as np
 
 # Suppress TensorFlow and protobuf warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+os.environ['PYTHONHASHSEED'] = '0'
 warnings.filterwarnings('ignore', category=UserWarning, module='google.protobuf')
 
 import tensorflow as tf
+# Configure TensorFlow for memory efficiency
+tf.config.threading.set_inter_op_parallelism_threads(1)
+tf.config.threading.set_intra_op_parallelism_threads(1)
 from flask import Flask, request, render_template
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import (
@@ -72,14 +77,31 @@ def build_model_3x(input_shape=(9000, 1), num_classes=4):
 
 app = Flask(__name__)
 
-# Build the model and load your saved weights
-model = build_model_3x(input_shape=(9000, 1), num_classes=4)
-############################################################################################
-############################################################################################
-model.load_weights("fold1_model.keras")   # change here
-############################################################################################
-############################################################################################
+# Global variable to hold model (lazy loading)
+model = None
 class_names = ["W", "N1+REM", "N2", "N3+N4"]
+
+def load_model():
+    """Load model only when needed to save memory"""
+    global model
+    if model is None:
+        try:
+            # Force garbage collection before loading
+            gc.collect()
+            
+            # Build the model and load weights
+            model = build_model_3x(input_shape=(9000, 1), num_classes=4)
+            model.load_weights("fold1_model.keras")
+            
+            # Clear unnecessary data to save memory
+            tf.keras.backend.clear_session()
+            gc.collect()
+            
+            print("Model loaded successfully")
+        except Exception as e:
+            print(f"Error loading model: {e}")
+            model = "error"
+    return model
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -100,6 +122,14 @@ def index():
                     prediction=f"❌ .npz has keys {keys}. Use 'data' or a single array."
                 )
 
+            # Load model when needed
+            current_model = load_model()
+            if current_model == "error":
+                return render_template(
+                    "index.html",
+                    prediction="❌ Model loading failed. Please try again later."
+                )
+
             # Now check shape and reshape if necessary
             if signal.shape == (9000,):
                 sig = signal.reshape(1, 9000, 1)
@@ -111,9 +141,12 @@ def index():
                     prediction=f"❌ Invalid shape {signal.shape}. Expected (9000,) or (1,9000,1)."
                 )
 
-            preds = model.predict(sig)
-            idx = np.argmax(preds, axis=1)[0]
-            prediction = class_names[idx]
+            try:
+                preds = current_model.predict(sig)
+                idx = np.argmax(preds, axis=1)[0]
+                prediction = class_names[idx]
+            except Exception as e:
+                prediction = f"❌ Prediction failed: {str(e)}"
         else:
             prediction = "❌ Please upload a valid .npz file."
     return render_template("index.html", prediction=prediction)
